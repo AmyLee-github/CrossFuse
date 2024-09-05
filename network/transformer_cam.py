@@ -21,16 +21,17 @@ class Padding_tensor(nn.Module):
 
     def forward(self, x):
         b, c, h, w = x.shape
+        # 计算出能分成多少个patch
         h_patches = int(np.ceil(h / self.patch_size))
         w_patches = int(np.ceil(w / self.patch_size))
-
+        # 计算出需要padding的大小
         h_padding = np.abs(h - h_patches * self.patch_size)
         w_padding = np.abs(w - w_patches * self.patch_size)
-
+        # 进行反射填充
         reflection_padding = [0, w_padding, 0, h_padding]
         reflection_pad = nn.ReflectionPad2d(reflection_padding)
         x = reflection_pad(x)
-        return x, [h_patches, w_patches, h_padding, w_padding]
+        return x, [h_patches, w_patches, h_padding, w_padding]# 返回填充后的图片和patch信息
     
     
 class PatchEmbed_tensor(nn.Module):
@@ -41,7 +42,7 @@ class PatchEmbed_tensor(nn.Module):
 
     def forward(self, x):
         b, c, h, w = x.shape
-        x, patches_paddings = self.padding_tensor(x)
+        x, patches_paddings = self.padding_tensor(x)# 对图片进行填充，得到填充后的图片和patch信息
         h_patches = patches_paddings[0]
         w_patches = patches_paddings[1]
         # -------------------------------------------
@@ -418,3 +419,23 @@ class cross_encoder(nn.Module):
         # -------------------------------------
         # recons
         return out, x1_a, x2_a, roll_x_self1, roll_x_self2, x_cross1, x_cross2
+
+# 类之间的关系图：
+# cross_encoder
+#   ├── self_atten
+#   │     ├── PatchEmbed_tensor
+#   │     │     └── Padding_tensor
+#   │     ├── self_atten_module
+#   │     │     └── Block
+#   │     │           ├── Attention
+#   │     │           └── MLP
+#   │     └── Recons_tensor
+#   ├── cross_atten
+#   │     ├── PatchEmbed_tensor
+#   │     │     └── Padding_tensor
+#   │     ├── cross_atten_module
+#   │     │     └── Block
+#   │     │           ├── Attention
+#   │     │           └── MLP
+#   │     └── Recons_tensor
+#   └── Recons_tensor
