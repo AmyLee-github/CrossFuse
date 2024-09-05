@@ -68,7 +68,7 @@ def test(model_auto_ir, model_auto_vi, model_trans, shift_flag, ir_path, vi_path
 
 
 
-if __name__ == "__main__":
+if __name__ == "__main__": #@note if_main
     # Auto-Encoder
     custom_config_auto = {
         "in_channels": 1,

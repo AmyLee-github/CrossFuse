@@ -37,7 +37,7 @@ custom_config_auto = {
 	"part_out": 128,
 	"train_flag": True,
 }
-# Trans module
+# @note Trans module config
 custom_config = {
 	"en_out_channels1": 32,
 	"out_channels": 1,
@@ -291,7 +291,7 @@ def train(data, img_flag):
 	print("\nDone, TransFuse training phase.")
 
 
-if __name__ == "__main__":
+if __name__ == "__main__": #@note if_main
 	# True - RGB, False - gray
 	if args.channel == 1:
 		img_flag = False
